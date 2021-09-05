@@ -3,7 +3,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MenuItem;
+//use App\Models\MenuItem;
+use App\MenuItem;
 use Illuminate\Routing\Controller as BaseController;
 
 class MenuController extends BaseController
@@ -95,6 +96,38 @@ class MenuController extends BaseController
      */
 
     public function getMenuItems() {
-        throw new \Exception('implement in coding task 3');
-    }
+        //throw new \Exception('implement in coding task 3');
+            $MenuItem = MenuItem::all();    
+            $source = array();
+           foreach($MenuItem as $key => $value)
+           {
+            
+               if($value->parent_id=="")
+                {
+                   $source[$value->id] = ['id'=>$value->id,'name'=>$value->name,'url'=>$value->url,'parent_id'=>$value->parent_id,'created_at'=>$value->created_at,'updated_at'=>$value->updated_at];     
+                }
+                else
+                {
+                   $source[$value->parent_id]['child'][$value->id]= ['id'=>$value->id,'name'=>$value->name,'url'=>$value->url,'parent_id'=>$value->parent_id,'created_at'=>$value->created_at,'updated_at'=>$value->updated_at];    
+                      
+                }    
+
+            }
+
+            return response()->json(['json'=>$source]);
+
+            
+            }
+
+         
+
+       
+
+   
+
+
+
+ 
+
+
 }
