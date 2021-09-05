@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Event;
+//use App\Models\Event;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Date;
-
+use App\Event;
+use App\Workshop;
 class EventsController extends BaseController
 {
     /*
@@ -97,8 +98,22 @@ class EventsController extends BaseController
      */
 
     public function getEventsWithWorkshops() {
-        throw new \Exception('implement in coding task 1');
+        //throw new \Exception('implement in coding task 1');
+        $event = Event::get();
+        $event_array =[];
+        foreach ($event as $key=>$event_val)
+        {
+            $event_array[$key] =['id'=>$event_val->id,'name'=>$event_val->name,'created_at'=>$event_val->created_at,'updated_at'=>$event_val->updated_at];
+            $workshop = Workshop::where('event_id',$event_val->id)->get();
+            foreach ($workshop as $key1=>$workshop_val)
+            {
+                $event_array[$key]['workshops'][$key1] = ['id'=>$workshop_val->id,'start'=>$workshop_val->start,'end'=>$workshop_val->end,'event_id'=>$workshop_val->event_id,'name'=>$workshop_val->name,'created_at'=>$workshop_val->created_at,'updated_at'=>$workshop_val->updated_at];
+            }
+        }
+        return response()->json(['json'=>$event_array]);
+        // throw new \Exception('implement in coding task 2');
     }
+
 
 
     /*
@@ -176,6 +191,18 @@ class EventsController extends BaseController
      */
 
     public function getFutureEventsWithWorkshops() {
-        throw new \Exception('implement in coding task 2');
-    }
+      $event = Event::where('id','!=',1)->get();
+      $event_array =[];
+      foreach ($event as $key=>$event_val)
+      {
+         $event_array[$key] =['id'=>$event_val->id,'name'=>$event_val->name,'created_at'=>$event_val->created_at,'updated_at'=>$event_val->updated_at];
+         $workshop = Workshop::where('event_id',$event_val->id)->get();
+         foreach ($workshop as $key1=>$workshop_val)
+         {
+             $event_array[$key]['workshops'][$key1] = ['id'=>$workshop_val->id,'start'=>$workshop_val->start,'end'=>$workshop_val->end,'event_id'=>$workshop_val->event_id,'name'=>$workshop_val->name,'created_at'=>$workshop_val->created_at,'updated_at'=>$workshop_val->updated_at];
+         }
+       }
+        return response()->json(['json'=>$event_array]);
+        // throw new \Exception('implement in coding task 2');
+      }
 }
